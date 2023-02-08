@@ -11,7 +11,7 @@ from pyntree.errors import Error
 
 
 class File:
-    def __init__(self, data, filetype='txt', save_on_close=False):
+    def __init__(self, data, filetype='txt', autosave=False, save_on_close=False):
         """
         Load a file for use with a Node object.
 
@@ -23,11 +23,13 @@ class File:
 
         :param data: The filename or dictionary object
         :param filetype: The type of data stored/to store
-        :param save_on_close: Whether to save the file when this object is destroyed
+        :param autosave: Save the file when Nodes are updated
+        :param save_on_close: Whether to save the file when this object is destroyed (irrelevant if autosave = True)
         """
         if filetype is None:
             filetype = 'pyn'  # Default filetype
         self.filetype = filetype
+        self.autosave = autosave
         self.save_on_close = save_on_close
         if type(data) is str:  # Helps a Data class work
             if not exists(data):

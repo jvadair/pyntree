@@ -6,7 +6,7 @@ from typing import Union
 class Node:
     def __init__(
                  self,
-                 file: Union[File, str] = None,
+                 file: Union[File, str, dict] = None,
                  path: list = None,
                  autosave: bool = False,
                  **file_args
@@ -39,7 +39,7 @@ class Node:
     def __setattr__(self, name, value):
         target = self()  # Calls the __call__ function to get the target (which is a mutable value)
         target[name] = value  # Sets the final target to the desired value
-        if self.autosave:
+        if self.file.autosave:
             self.file.save()
 
     def __call__(self, *args, **kwargs):

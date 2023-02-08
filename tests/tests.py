@@ -34,10 +34,27 @@ class FileReading(unittest.TestCase):
                 self.assertEqual(db.b.c(), 2)
 
 
-# class DataReading(FileReadingTXT):
-#     def __init__(self):
-#         super().__init__()
-#         self.db = Node({})
+class FileModification(unittest.TestCase):
+    def test_layer_0(self):
+        db = Node({})
+        db.set('a', 1)
+        self.assertEqual(db.a(), 1)
+
+    def test_layer_1(self):
+        db = Node({'a': {}})
+        db.a.set('b', {})
+        self.assertEqual(db.a.b(), {})
+
+    def test_layer_2(self):
+        db = Node({'a': {'b': {}}})
+        db.a.b.set('c', 3)
+        self.assertEqual(db.a.b.c(), 3)
+
+    def test_alternate_set(self):
+        db = Node({})
+        db.z = 1
+        # noinspection PyCallingNonCallable
+        self.assertEqual(db.z(), 1)
 
 
 if __name__ == '__main__':
