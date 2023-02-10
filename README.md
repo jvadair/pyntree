@@ -7,6 +7,7 @@ To view, visit https://board.jvadair.com
 and use credentials:
 - Username: public
 - Password: public
+
 Feel free to create your own board on the project if you would like to contribute.
 
 ## Docs
