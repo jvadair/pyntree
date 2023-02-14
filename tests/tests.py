@@ -1,8 +1,9 @@
 import unittest
 from pyntree import Node
-from os import chdir
+from pyntree.file import EXTENSIONS
+import os
 
-chdir("..")
+os.chdir("..")
 
 LOADABLE = ['tests/sample.txt', {'a': 1, 'b': {'c': 2}}, "tests/sample.pyn", "tests/sample.pyn.gz"]
 
@@ -56,6 +57,36 @@ class FileModification(unittest.TestCase):
         db.z = 1
         # noinspection PyCallingNonCallable
         self.assertEqual(db.z(), 1)
+
+
+class FileSaving(unittest.TestCase):
+    def setUp(self):
+        self.filetypes = EXTENSIONS.keys()
+
+    def test_save(self):
+        with self.subTest():
+            for ext in self.filetypes:
+                db = Node({'a': 1, 'b': {'c': 2}})
+                db.file.switch_to_file('tests/testing_output.' + ext)
+                db.save()
+                self.assertEqual(Node('tests/testing_output.' + ext)(), db())
+                os.remove('tests/testing_output.' + ext)
+
+    def test_save_to_alternate_file(self):
+        # Initial data
+        db = Node({'a': 1, 'b': {'c': 2}})
+        db.switch_to_file('tests/testing_output.txt')
+        db.save()
+        del db
+        # Overwrite, but maintain original file object
+        db = Node({'n': 1, 'b': {'c': 2}})
+        db.switch_to_file('tests/testing_output_2.pyn')
+        db.save(filename='tests/testing_output.txt')
+        db.save()
+        self.assertEqual(Node("tests/testing_output.txt")(), {'n': 1, 'b': {'c': 2}})
+        self.assertEqual(Node("tests/testing_output_2.pyn")(), {'n': 1, 'b': {'c': 2}})
+        os.remove("tests/testing_output.txt")
+        os.remove("tests/testing_output_2.pyn")
 
 
 class DeletionTests(unittest.TestCase):

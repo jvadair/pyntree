@@ -25,6 +25,9 @@ class Node:
         self.__dict__['get'] = self.__getattr__
         self.__dict__['set'] = self.__setattr__
         self.__dict__['file'] = file if type(file) is File else File(file, **file_args)
+        self.__dict__['save'] = self.file.save
+        self.__dict__['switch_to_file'] = self.file.switch_to_file
+
 
     def __getattr__(self, name):
         """
