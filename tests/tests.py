@@ -11,7 +11,7 @@ LOADABLE = ['tests/sample.txt', {'a': 1, 'b': {'c': 2}}, "tests/sample.pyn", "te
 class FileLoading(unittest.TestCase):
     def test_basic_load(self):
         for item in LOADABLE:
-            with self.subTest():
+            with self.subTest(msg=str(item)):
                 db = Node(item)
 
 
@@ -21,18 +21,18 @@ class FileReading(unittest.TestCase):
 
     def test_layer_0(self):
         for db in self.databases:
-            with self.subTest():
+            with self.subTest(msg=db.file.filetype):
                 self.assertEqual(db(), {'a': 1, 'b': {'c': 2}})
 
     def test_layer_1(self):
         for db in self.databases:
-            with self.subTest():
+            with self.subTest(msg=db.file.filetype):
                 self.assertEqual(db.a(), 1)
                 self.assertEqual(db.b(), {'c': 2})
 
     def test_layer_2(self):
         for db in self.databases:
-            with self.subTest():
+            with self.subTest(msg=db.file.filetype):
                 self.assertEqual(db.b.c(), 2)
 
 
@@ -64,8 +64,8 @@ class FileSaving(unittest.TestCase):
         self.filetypes = EXTENSIONS.keys()
 
     def test_save(self):
-        with self.subTest():
-            for ext in self.filetypes:
+        for ext in self.filetypes:
+            with self.subTest(msg=ext):
                 db = Node({'a': 1, 'b': {'c': 2}})
                 db.file.switch_to_file('tests/testing_output.' + ext)
                 db.save()

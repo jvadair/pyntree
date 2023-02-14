@@ -49,6 +49,7 @@ class File:
             self.data = self.read_data()  # Not to be confused with the data parameter
         else:
             self.data = data
+            self.filetype = 'dict'
 
     # noinspection PyTypeChecker
     def read_data(self):
