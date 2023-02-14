@@ -4,7 +4,7 @@ from os import chdir
 
 chdir("..")
 
-LOADABLE = ['tests/sample.txt', {'a': 1, 'b': {'c': 2}}]
+LOADABLE = ['tests/sample.txt', {'a': 1, 'b': {'c': 2}}, "tests/sample.pyn", "tests/sample.pyn.gz"]
 
 
 class FileLoading(unittest.TestCase):
