@@ -50,3 +50,21 @@ class Node:
         else:
             target = self.file.data
         return target
+
+    def delete(self, name=''):
+        """
+        Deletes the Node or the specified child Node
+        :param name: If set, deletes a child Node, otherwise the function will delete this Node.
+        :return:
+        """
+        if name:
+            target = self()
+            target.pop(name)
+        else:
+            if self.path:  # Root node will have a path equal to []
+                target = self.file.data
+                for i in self.path[0:-1]:  # Iter over all but last
+                    target = target.get(i)
+                target.pop(self.path[-1])
+            else:
+                self.file.data = {}

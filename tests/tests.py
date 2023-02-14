@@ -1,6 +1,7 @@
 import unittest
 from pyntree import Node
 from os import chdir
+
 chdir("..")
 
 LOADABLE = ['tests/sample.txt', {'a': 1, 'b': {'c': 2}}]
@@ -55,6 +56,34 @@ class FileModification(unittest.TestCase):
         db.z = 1
         # noinspection PyCallingNonCallable
         self.assertEqual(db.z(), 1)
+
+
+class DeletionTests(unittest.TestCase):
+    def test_layer_0(self):
+        db = Node({'a': {'b': {'c': 'd'}}, 'b': "test"})
+        db.delete()
+        self.assertEqual(db(), {})
+
+    def test_layer_1(self):
+        db = Node({'a': {'b': {'c': 'd'}}, 'b': "test"})
+        db.delete('a')
+        self.assertEqual(db(), {'b': 'test'})
+
+    def test_layer_1_alternate(self):
+        db = Node({'a': {'b': {'c': 'd'}}, 'b': "test"})
+        db.a.delete()
+        self.assertEqual(db(), {"b": "test"})
+
+    def test_layer_2(self):
+        db = Node({'a': {'b': {'c': 'd'}}, 'b': "test"})
+        db.a.delete('b')
+        self.assertEqual(db(), {'a': {}, 'b': "test"})
+
+    def test_layer_2_alternate(self):
+        db = Node({'a': {'b': {'c': 'd'}}, 'b': "test"})
+        db.a.b.delete()
+        # noinspection PyCallingNonCallable
+        self.assertEqual(db(), {'a': {}, 'b': "test"})
 
 
 if __name__ == '__main__':
