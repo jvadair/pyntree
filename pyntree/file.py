@@ -77,7 +77,6 @@ class File:
         if not exists(filename):
             open(filename, 'w').close()  # Create file if it doesn't exist
         if self.filetype == 'pyn' or self.filetype in pickle.get_known_compressions():
-            print(self.filetype)
             self.file = open(filename, 'rb+')
         else:
             self.file = open(filename, 'r+')
