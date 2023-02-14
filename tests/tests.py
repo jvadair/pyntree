@@ -86,5 +86,16 @@ class DeletionTests(unittest.TestCase):
         self.assertEqual(db(), {'a': {}, 'b': "test"})
 
 
+class FileScanningTests(unittest.TestCase):
+    def setUp(self):
+        self.db = Node({"val1": 'h', "val2": 'b'})
+
+    def test_has(self):
+        self.assertTrue(self.db.has("val1"))
+
+    def test_values(self):
+        self.assertEqual(self.db.values, ["val1", "val2"])
+
+
 if __name__ == '__main__':
     unittest.main()

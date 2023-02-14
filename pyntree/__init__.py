@@ -68,3 +68,10 @@ class Node:
                 target.pop(self.path[-1])
             else:
                 self.file.data = {}
+
+    @property
+    def values(self):
+        return list(self().keys())
+
+    def has(self, item):
+        return True if item in self.values else False
