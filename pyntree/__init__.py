@@ -71,7 +71,16 @@ class Node:
 
     @property
     def values(self):
+        """
+        Returns the list of child Nodes this Node contains
+        :return:
+        """
         return list(self().keys())
 
     def has(self, item):
+        """
+        Check if the specified child Node exists
+        :param item: The item to check for
+        :return:
+        """
         return True if item in self.values else False
