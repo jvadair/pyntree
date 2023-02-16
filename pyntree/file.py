@@ -15,7 +15,7 @@ EXTENSIONS = {
 DEFAULT_FILETYPE = 'pyn'
 
 
-def infer_filetype(data):
+def infer_filetype(data) -> str:
     if type(data) is str:
         if len(data.rsplit('.')) > 1:  # If filename has extension
             ext = data.rsplit('.')[-1]
@@ -25,7 +25,14 @@ def infer_filetype(data):
 
 
 class File:
-    def __init__(self, data, filetype=None, autosave=False, save_on_close=False):
+    def __init__(
+            self,
+            data,
+            filetype=None,
+            autosave=False,
+            save_on_close=False
+    ) -> None:
+
         """
         Load a file for use with a Node object. If the filetype is unknown, 'pyn' will be used.
 
@@ -52,7 +59,10 @@ class File:
             self.filetype = 'dict'
 
     # noinspection PyTypeChecker
-    def read_data(self):
+    def read_data(self) -> dict:
+        """
+        :return: The data currently stored in the file
+        """
         self.file.seek(0)
         if self.filetype == 'pyn':
             return pickle.loads(self.file.read(), None)
@@ -62,7 +72,7 @@ class File:
             return pickle.loads(self.file.read(), self.filetype)
 
     # noinspection PyAttributeOutsideInit
-    def switch_to_file(self, filename, filetype=None,):
+    def switch_to_file(self, filename, filetype=None) -> None:
         """
         Closes the old file object (if it exists) and replaces it with a new one.
         :param filename: The name of the file to switch to
@@ -81,9 +91,11 @@ class File:
         else:
             self.file = open(filename, 'r+')
 
-    def save(self, filename=None):
+    # noinspection PyUnboundLocalVariable
+    def save(self, filename=None) -> None:
         """
         Saves the data to the file
+        :param filename: If set, the Node will save to the specified file and then reload its original file object
         """
         if filename:  # Only keeps 1 file in memory at a time
             old_filename = self.filename
@@ -105,7 +117,11 @@ class File:
         if filename:
             self.switch_to_file(old_filename)
 
-    def __del__(self):
+    def __del__(self) -> None:
+        """
+        Garbage collector function for implementing save_on_close and properly closing the file object
+        :return:
+        """
         if 'file' in self.__dict__.keys():  # If file attribute was set
             if self.save_on_close:
                 self.save()
