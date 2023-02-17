@@ -4,6 +4,7 @@ from typing import Union, Any, List
 
 
 class Node:
+    # noinspection PyShadowingNames
     def __init__(
             self,
             file: Union[File, str, dict] = None,
@@ -27,6 +28,8 @@ class Node:
         # Set and get methods for easy/standard access to the dunder methods
         self.__dict__['get'] = self.__getattr__
         self.__dict__['set'] = self.__setattr__
+        if file is None:  # Allows for creating a node like so: Node()
+            file = {}
         self.__dict__['file'] = file if type(file) is File else File(file, **file_args)
         self.__dict__['save'] = self.file.save
         self.__dict__['switch_to_file'] = self.file.switch_to_file

@@ -14,6 +14,10 @@ class FileLoading(unittest.TestCase):
             with self.subTest(msg=str(item)):
                 db = Node(item)
 
+    def test_blank_load(self):
+        db = Node()
+        self.assertEqual(db(), {})
+
 
 class FileReading(unittest.TestCase):
     def setUp(self):
