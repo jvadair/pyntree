@@ -1,8 +1,7 @@
 from os.path import exists
 from pyntree.errors import Error
 import compress_pickle as pickle
-# from json import load as load_json
-# from json import dumps as save_json
+import json
 # from json.decoder import JSONDecodeError
 # from pyndb.encryption import encrypt, decrypt, InvalidToken
 
@@ -10,6 +9,7 @@ EXTENSIONS = {
     "txt": "txt",
     "pyn": "pyn",
     "pyndb": "pyn",
+    "json": "json",
     **pickle.get_registered_extensions()
 }
 DEFAULT_FILETYPE = 'pyn'
@@ -35,6 +35,7 @@ class File:
 
         """
         Load a file for use with a Node object. If the filetype is unknown, 'pyn' will be used.
+        Use switch_to_file to change the filename, as changing File.name will not update the file object.
 
         Filetype options:
 
@@ -56,7 +57,7 @@ class File:
             self.data = self.read_data()  # Not to be confused with the data parameter
         else:
             self.data = data
-            self.filetype = 'dict'
+            self.filetype = 'txt' if not filetype else filetype
 
     # noinspection PyTypeChecker
     def read_data(self) -> dict:
@@ -66,6 +67,8 @@ class File:
         self.file.seek(0)
         if self.filetype == 'pyn':
             return pickle.loads(self.file.read(), None)
+        elif self.filetype == 'json':
+            return json.loads(self.file.read())
         elif self.filetype == 'txt':
             return eval(self.file.read())
         elif self.filetype in pickle.get_known_compressions():
@@ -79,13 +82,17 @@ class File:
         :param filetype: The type of data stored in the file to switch to
         :return:
         """
-        self.filename = filename
+        self.name = filename
         if self.file:  # Close open file if it exists
             self.file.close()
         if filetype is None:
             self.filetype = infer_filetype(filename)
         if not exists(filename):
-            open(filename, 'w').close()  # Create file if it doesn't exist
+            if self.filetype == 'json':
+                with open(filename, 'w') as file:
+                    file.write('{}')
+            else:
+                open(filename, 'w').close()  # Create file if it doesn't exist
         if self.filetype == 'pyn' or self.filetype in pickle.get_known_compressions():
             self.file = open(filename, 'rb+')
         else:
@@ -98,15 +105,17 @@ class File:
         :param filename: If set, the Node will save to the specified file and then reload its original file object
         """
         if filename:  # Only keeps 1 file in memory at a time
-            old_filename = self.filename
+            old_filename = self.name
             self.switch_to_file(filename)
         elif not self.file and not filename:
             raise Error.FileNameUnset(
-                "You have not specified a filename for this data."
+                "You have not specified a filename for this data. "
                 "Try setting the filename parameter or use switch_to_file."
             )
         if self.filetype == 'pyn':
             to_write = pickle.dumps(self.data, None)
+        elif self.filetype == 'json':
+            to_write = json.dumps(self.data, sort_keys=True, indent=2)
         elif self.filetype == 'txt':
             to_write = str(self.data)
         elif self.filetype in pickle.get_known_compressions():

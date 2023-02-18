@@ -5,7 +5,13 @@ import os
 
 os.chdir("..")
 
-LOADABLE = ['tests/sample.txt', {'a': 1, 'b': {'c': 2}}, "tests/sample.pyn", "tests/sample.pyn.gz"]
+LOADABLE = [
+    'tests/sample.txt',
+    {'a': 1, 'b': {'c': 2}},
+    "tests/sample.pyn",
+    "tests/sample.pyn.gz",
+    "tests/sample.json"
+]
 
 
 class FileLoading(unittest.TestCase):
@@ -91,6 +97,13 @@ class FileSaving(unittest.TestCase):
         self.assertEqual(Node("tests/testing_output_2.pyn")(), {'n': 1, 'b': {'c': 2}})
         os.remove("tests/testing_output.txt")
         os.remove("tests/testing_output_2.pyn")
+
+    def test_dictionary_filename(self):
+        db = Node({'a': 'b'})
+        db.switch_to_file('tests/testing_savedict.json')
+        db.save()
+        self.assertEqual(Node('tests/testing_savedict.json')(), {'a': 'b'})
+        os.remove('tests/testing_savedict.json')
 
 
 class DeletionTests(unittest.TestCase):
