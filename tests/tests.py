@@ -24,6 +24,17 @@ class FileLoading(unittest.TestCase):
         db = Node()
         self.assertEqual(db(), {})
 
+    def test_reload_from_file(self):
+        db = Node('tests/sample_reloadme.txt')
+        with open('tests/sample_reloadme.txt', 'w') as file:
+            file.write("{'a': 2}")
+            file.truncate()
+        db.file.reload()
+        self.assertEqual(db(), {'a': 2})
+        with open('tests/sample_reloadme.txt', 'w') as file:  # Reset
+            file.write("{'a': 1}")
+            file.truncate()
+
 
 class FileReading(unittest.TestCase):
     def setUp(self):

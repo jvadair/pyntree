@@ -98,6 +98,13 @@ class File:
         else:
             self.file = open(filename, 'r+')
 
+    def reload(self):
+        """
+        Sets the data object for the file to the data stored in the file
+        :return:
+        """
+        self.data = self.read_data()
+
     # noinspection PyUnboundLocalVariable
     def save(self, filename=None) -> None:
         """
