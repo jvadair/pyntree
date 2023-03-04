@@ -2,8 +2,6 @@ from os.path import exists
 from pyntree.errors import Error
 import compress_pickle as pickle
 import json
-# from json.decoder import JSONDecodeError
-# from pyndb.encryption import encrypt, decrypt, InvalidToken
 
 EXTENSIONS = {
     "txt": "txt",
@@ -89,11 +87,13 @@ class File:
         if filetype is None:
             self.filetype = infer_filetype(filename)
         if not exists(filename):
-            if self.filetype == 'json':
-                with open(filename, 'w') as file:
-                    file.write('{}')
-            else:
-                open(filename, 'w').close()  # Create file if it doesn't exist
+            with open(filename, 'wb') as file:  # Create file in proper format if it doesn't exist
+                if self.filetype in ('json', 'txt'):
+                    file.write(b'{}')
+                elif self.filetype == 'pyn':
+                    file.write(pickle.dumps({}, None))
+                else:
+                    file.write(pickle.dumps({}, self.filetype))
         if self.filetype == 'pyn' or self.filetype in pickle.get_known_compressions():
             self.file = open(filename, 'rb+')
         else:

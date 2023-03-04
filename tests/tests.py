@@ -35,6 +35,12 @@ class FileLoading(unittest.TestCase):
             file.write("{'a': 1}")
             file.truncate()
 
+    def test_load_new_file(self):
+        for ext in EXTENSIONS:
+            with self.subTest(msg=ext):
+                db = Node(f'tests/newdb.{ext}')
+                os.remove(f'tests/newdb.{ext}')
+
 
 class FileReading(unittest.TestCase):
     def setUp(self):
