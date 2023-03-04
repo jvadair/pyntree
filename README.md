@@ -8,11 +8,12 @@ and use credentials:
 - Username: public
 - Password: public
 
-Feel free to create your own board on the project if you would like to contribute.
-
 ## Docs
 The external documentation is not finished yet, but I have made sure to add detailed in-code documentation.
 
 To view the *WIP* documentation, visit: https://pen.jvadair.com/books/pyntree
 
 > Do not expect any level of correctness or completeness from the documentation yet.
+
+## Contributing
+If you would like to contribute, feel free to fork the repository and start a pull request. I will manually review/test them before implementing. If you have any questions regarding the project or how to contribute, you're welcome to [contact me](mailto:dev@jvadair.com).
