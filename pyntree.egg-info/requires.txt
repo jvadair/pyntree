@@ -1,0 +1,9 @@
+compress_pickle>=2.1.0
+
+[dev]
+pipreqs
+build
+twine
+
+[lz4]
+compress_pickle[lz4]
