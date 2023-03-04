@@ -58,6 +58,7 @@ class File:
         else:
             self.data = data
             self.filetype = 'txt' if not filetype else filetype
+            self.name = None
 
     # noinspection PyTypeChecker
     def read_data(self) -> dict:
@@ -130,7 +131,7 @@ class File:
         self.file.seek(0)
         self.file.write(to_write)
         self.file.truncate()
-        if filename:
+        if filename and old_filename:  # If the old filename was None, then it can't be switched back to
             self.switch_to_file(old_filename)
 
     def __del__(self) -> None:

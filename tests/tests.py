@@ -111,6 +111,12 @@ class FileSaving(unittest.TestCase):
 
     def test_dictionary_filename(self):
         db = Node({'a': 'b'})
+        db.save(filename='tests/testing_savedict.json')
+        self.assertEqual(Node('tests/testing_savedict.json')(), {'a': 'b'})
+        os.remove('tests/testing_savedict.json')
+
+    def test_dictionary_filename_alt(self):
+        db = Node({'a': 'b'})
         db.switch_to_file('tests/testing_savedict.json')
         db.save()
         self.assertEqual(Node('tests/testing_savedict.json')(), {'a': 'b'})
