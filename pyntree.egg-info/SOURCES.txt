@@ -2,6 +2,9 @@ LICENSE.txt
 README.md
 pyproject.toml
 requirements.txt
+pyntree/__init__.py
+pyntree/errors.py
+pyntree/file.py
 pyntree.egg-info/PKG-INFO
 pyntree.egg-info/SOURCES.txt
 pyntree.egg-info/dependency_links.txt
