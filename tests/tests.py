@@ -167,6 +167,21 @@ class FileScanningTests(unittest.TestCase):
     def test_values(self):
         self.assertEqual(self.db.values, ["val1", "val2"])
 
+    def test__str__(self):
+        self.assertEqual(str(self.db), str({"val1": 'h', "val2": 'b'}))
+
+    def test__repr__(self):
+        self.assertEqual(repr(self.db), "Node(" + str({"val1": 'h', "val2": 'b'}) + ")")
+
+    def test_name_layer_0_data(self):
+        self.assertEqual(self.db.name, 'None')
+
+    def test_name_layer_0_file(self):
+        self.assertEqual(Node('tests/sample.txt').name, 'tests/sample.txt')
+
+    def test_name_layer_1(self):
+        self.assertEqual(self.db.val1.name, 'val1')
+
 
 if __name__ == '__main__':
     unittest.main()

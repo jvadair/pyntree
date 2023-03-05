@@ -59,6 +59,18 @@ class Node:
             target = self.file.data
         return target
 
+    def __str__(self):
+        """
+        :return: A string representation of the data contained within the Node
+        """
+        return str(self())
+
+    def __repr__(self):
+        """
+        :return: A string containing the code necessary to replicate the Node
+        """
+        return f'Node({self()})'
+
     def delete(self, name='') -> None:
         """
         Deletes the Node or the specified child Node
@@ -84,6 +96,16 @@ class Node:
         :return:
         """
         return list(self().keys())
+
+    @property
+    def name(self) -> str:
+        """
+        :return: The name of the child Node, or the filename for root Nodes, or 'None' for root nodes without a filename
+        """
+        if self.path:
+            return self.path[-1]
+        else:  # "None" for pure-data Nodes
+            return str(self.file.name)
 
     def has(self, item) -> bool:
         """
