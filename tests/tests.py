@@ -14,6 +14,10 @@ LOADABLE = [
     "tests/sample.json"
 ]
 
+EXTRA = [  # These hold different data
+    "tests/node-in-node.pyn"
+]
+
 
 class FileLoading(unittest.TestCase):
     def test_basic_load(self):
@@ -50,6 +54,7 @@ class FileLoading(unittest.TestCase):
 class FileReading(unittest.TestCase):
     def setUp(self):
         self.databases = [Node(i) for i in LOADABLE]
+        self.databases.append(Node(EXTRA[0]).data())
 
     def test_layer_0(self):
         for db in self.databases:
@@ -70,6 +75,7 @@ class FileReading(unittest.TestCase):
     def test_serialized_read(self):
         db = Node('tests/serialized.pyn')
         self.assertEqual(db.time(), dt(2023, 3, 6, 21, 2, 8, 550653))
+
 
 class FileModification(unittest.TestCase):
     def test_layer_0(self):
@@ -141,6 +147,11 @@ class FileSaving(unittest.TestCase):
         db.save()
         self.assertEqual(Node('tests/testing_savedict.json')(), {'a': 'b'})
         os.remove('tests/testing_savedict.json')
+
+    def test_node_in_node(self):
+        db = Node({'a': Node()})
+        db.save('tests/testing_save_NiN.pyn')
+        os.remove('tests/testing_save_NiN.pyn')
 
 
 class DeletionTests(unittest.TestCase):

@@ -74,6 +74,21 @@ class Node(object):
         else:
             return repr(self())
 
+    def __getstate__(self):  # When pickled
+        trim = self.file  # The File object is what contains all the relevant information, even for pure data Nodes.
+        if trim.file:
+            # Remove the '_io.BufferedRandom' object which can't be serialized
+            trim.file.close()
+            trim.file = None
+        # Note: The path information will be discarded. This is intentional.
+        return trim
+
+    def __setstate__(self, state):
+        file = state
+        if file.name:  # If there is a filename
+            file.switch_to_file(file.name)  # Reload the file object
+        self.__init__(file)
+
     def delete(self, name='') -> None:
         """
         Deletes the Node or the specified child Node
