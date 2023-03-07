@@ -3,7 +3,7 @@ from pyntree.errors import Error
 from typing import Union, Any, List
 
 
-class Node:
+class Node(object):
     # noinspection PyShadowingNames
     def __init__(
             self,
