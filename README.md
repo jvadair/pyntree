@@ -16,6 +16,13 @@ db.hello()
 # Output: "world"
 db.save()
 ```
+#### Fun example
+```python
+from datetime import datetime as dt
+from pyntree import Node
+data = {'right_now': dt.now()}  # Some sample data
+Node(data).save('file.pyn')  # 1-liner to save your data to a file!
+```
 
 ## Docs
 The documentation is available at https://pen.jvadair.com/books/pyntree
