@@ -69,7 +69,10 @@ class Node:
         """
         :return: A string containing the code necessary to replicate the Node
         """
-        return f'Node({self()})'
+        if type(self()) is dict:
+            return f'Node({self()})'
+        else:
+            return repr(self())
 
     def delete(self, name='') -> None:
         """
