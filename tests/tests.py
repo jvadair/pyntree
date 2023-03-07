@@ -2,6 +2,7 @@ import unittest
 from pyntree import Node
 from pyntree.file import EXTENSIONS
 import os
+from datetime import datetime as dt
 
 os.chdir("..")
 
@@ -23,6 +24,10 @@ class FileLoading(unittest.TestCase):
     def test_blank_load(self):
         db = Node()
         self.assertEqual(db(), {})
+
+    def test_serialized_load(self):
+        db = Node('tests/serialized.pyn')
+        self.assertTrue(True)
 
     def test_reload_from_file(self):
         db = Node('tests/sample_reloadme.txt')
@@ -62,6 +67,9 @@ class FileReading(unittest.TestCase):
             with self.subTest(msg=db.file.filetype):
                 self.assertEqual(db.b.c(), 2)
 
+    def test_serialized_read(self):
+        db = Node('tests/serialized.pyn')
+        self.assertEqual(db.time(), dt(2023, 3, 6, 21, 2, 8, 550653))
 
 class FileModification(unittest.TestCase):
     def test_layer_0(self):
@@ -98,6 +106,12 @@ class FileSaving(unittest.TestCase):
                 db.save()
                 self.assertEqual(Node('tests/testing_output.' + ext)(), db())
                 os.remove('tests/testing_output.' + ext)
+
+    def test_serialized_save(self):
+        db = Node({'time': dt.now()})
+        db.save('tests/testing_serialization.pyn')
+        os.remove('tests/testing_serialization.pyn')
+        self.assertTrue(True)
 
     def test_save_to_alternate_file(self):
         # Initial data
@@ -178,7 +192,6 @@ class FileScanningTests(unittest.TestCase):
 
     def test__repr__final(self):
         self.assertEqual(repr(self.db.val1), "'h'")
-
 
     def test_name_layer_0_data(self):
         self.assertEqual(self.db.name, 'None')
