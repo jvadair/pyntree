@@ -24,6 +24,15 @@ data = {'right_now': dt.now()}  # Some sample data
 Node(data).save('file.pyn')  # 1-liner to save your data to a file!
 ```
 
+## Status
+pyntree is currently in beta while I battle-test it and work out any bugs not found by the unit tests.
+
+Under normal usage pyntree should perform as expected, but I cannot guaruntee it is production-ready.
+
+You can help by installing and testing the latest release, and reporting any bugs.
+
+You can also star/watch this repository to be notified when I make changes and release updates.
+
 ## Docs
 The documentation is available at https://pen.jvadair.com/books/pyntree
 
