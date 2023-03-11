@@ -53,7 +53,7 @@ class Node(object):
         if self.file.autosave:
             self.file.save()
 
-    def __call__(self, *args, **kwargs) -> Any:
+    def __call__(self) -> Any:
         if self.path:  # Root node will have a path equal to []
             target = self.file.data.get(self.path[0])
             for i in self.path[1:]:  # Iter over all but first
