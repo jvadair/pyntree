@@ -55,6 +55,10 @@ class Node(object):
         return requested if len(requested) > 1 else requested[0]  # Don't return a list if only 1 name specified
 
     def __setattr__(self, *args) -> None:  # We must use *args and split the list to make this work
+        """
+        :param args: The names to modify, followed by the value to set them to
+        :return:
+        """
         args = list(args)
         if not len(args) >= 2:
             raise TypeError("You must specify at least 1 name and a value for the set method.")
@@ -108,7 +112,7 @@ class Node(object):
     def delete(self, *names) -> None:
         """
         Deletes the Node or the specified child Node
-        :param name: If set, deletes a child Node, otherwise the function will delete this Node.
+        :param names: If set, deletes the specified child Nodes, otherwise the function will delete this Node.
         :return:
         """
         if names:
@@ -142,10 +146,11 @@ class Node(object):
         else:  # "None" for pure-data Nodes
             return str(self.file.name)
 
-    def has(self, item) -> bool:
+    def has(self, *items) -> bool:
         """
         Check if the specified child Node exists
-        :param item: The item to check for
+        :param items: The items to check for
         :return:
         """
-        return True if item in self.values else False
+        for item in items:
+            return True if item in self.values else False
