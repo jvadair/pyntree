@@ -40,8 +40,11 @@ class Node(object):
         :param name:
         :return: The Node object for the name you specified
         """
-        if name not in self():  # If key doesn't exist
-            raise Error.NameNotFound(f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
+        try:
+            if name not in self():  # If key doesn't exist
+                raise Error.NameNotFound(f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
+        except TypeError:  # Throw something more descriptive/accurate
+            raise Error.NotANode(f"<RootNode>.{'.'.join(self.path)} is {type(self()).__name__}, not Node.")
         return Node(file=self.file, path=self.path + [name])
 
     def __setattr__(self, name, value) -> None:
