@@ -54,9 +54,15 @@ class Node(object):
             requested.append(Node(file=self.file, path=self.path + [name]))
         return requested if len(requested) > 1 else requested[0]  # Don't return a list if only 1 name specified
 
-    def __setattr__(self, name, value) -> None:
+    def __setattr__(self, *args) -> None:  # We must use *args and split the list to make this work
+        args = list(args)
+        if not len(args) >= 2:
+            raise TypeError("You must specify at least 1 name and a value for the set method.")
+        value = args.pop(-1)
+        names = args  # All arguments but last are names
         target = self()  # Calls the __call__ function to get the target (which is a mutable value)
-        target[name] = value  # Sets the final target to the desired value
+        for name in names:
+            target[name] = value  # Sets the final target to the desired value
         if self.file.autosave:
             self.file.save()
 
