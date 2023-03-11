@@ -43,7 +43,6 @@ class Node(object):
         :return: The Node object for the name you specified
         """
         names = (name,) + names
-        print(names)
         requested = []
         for name in names:
             try:
