@@ -92,15 +92,16 @@ class Node(object):
             file.switch_to_file(file.name)  # Reload the file object
         self.__init__(file)
 
-    def delete(self, name='') -> None:
+    def delete(self, *names) -> None:
         """
         Deletes the Node or the specified child Node
         :param name: If set, deletes a child Node, otherwise the function will delete this Node.
         :return:
         """
-        if name:
+        if names:
             target = self()
-            target.pop(name)
+            for name in names:
+                target.pop(name)
         else:
             if self.path:  # Root node will have a path equal to []
                 target = self.file.data
