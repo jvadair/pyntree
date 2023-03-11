@@ -34,18 +34,25 @@ class Node(object):
         self.__dict__['save'] = self.file.save
         self.__dict__['switch_to_file'] = self.file.switch_to_file
 
-    def __getattr__(self, name) -> 'Node':
+    def __getattr__(self, name, *names) -> Union['Node', List['Node']]:
         """
-        Retrieves the Node with the requested name, even if that name is already a class attribute
-        :param name:
+        Retrieves Nodes with the requested names, even if that name is already a class attribute.
+        You must specify at least 1 name.
+        :param name: The first, required name
+        :param names: Any additional names
         :return: The Node object for the name you specified
         """
-        try:
-            if name not in self():  # If key doesn't exist
-                raise Error.NameNotFound(f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
-        except TypeError:  # Throw something more descriptive/accurate
-            raise Error.NotANode(f"<RootNode>.{'.'.join(self.path)} is {type(self()).__name__}, not Node.")
-        return Node(file=self.file, path=self.path + [name])
+        names = (name,) + names
+        print(names)
+        requested = []
+        for name in names:
+            try:
+                if name not in self():  # If key doesn't exist
+                    raise Error.NameNotFound(f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
+            except TypeError:  # Throw something more descriptive/accurate
+                raise Error.NotANode(f"<RootNode>.{'.'.join(self.path)} is {type(self()).__name__}, not Node.")
+            requested.append(Node(file=self.file, path=self.path + [name]))
+        return requested if len(requested) > 1 else requested[0]  # Don't return a list if only 1 name specified
 
     def __setattr__(self, name, value) -> None:
         target = self()  # Calls the __call__ function to get the target (which is a mutable value)
