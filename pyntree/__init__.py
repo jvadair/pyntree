@@ -34,22 +34,38 @@ class Node(object):
         self.__dict__['save'] = self.file.save
         self.__dict__['switch_to_file'] = self.file.switch_to_file
 
-    def __getattr__(self, name) -> 'Node':
+    def __getattr__(self, name, *names) -> Union['Node', List['Node']]:
         """
-        Retrieves the Node with the requested name, even if that name is already a class attribute
-        :param name:
+        Retrieves Nodes with the requested names, even if that name is already a class attribute.
+        You must specify at least 1 name.
+        :param name: The first, required name
+        :param names: Any additional names
         :return: The Node object for the name you specified
         """
-        try:
-            if name not in self():  # If key doesn't exist
-                raise Error.NameNotFound(f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
-        except TypeError:  # Throw something more descriptive/accurate
-            raise Error.NotANode(f"<RootNode>.{'.'.join(self.path)} is {type(self()).__name__}, not Node.")
-        return Node(file=self.file, path=self.path + [name])
+        names = (name,) + names
+        requested = []
+        for name in names:
+            try:
+                if name not in self():  # If key doesn't exist
+                    raise Error.NameNotFound(f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
+            except TypeError:  # Throw something more descriptive/accurate
+                raise Error.NotANode(f"<RootNode>.{'.'.join(self.path)} is {type(self()).__name__}, not Node.")
+            requested.append(Node(file=self.file, path=self.path + [name]))
+        return requested if len(requested) > 1 else requested[0]  # Don't return a list if only 1 name specified
 
-    def __setattr__(self, name, value) -> None:
+    def __setattr__(self, *args) -> None:  # We must use *args and split the list to make this work
+        """
+        :param args: The names to modify, followed by the value to set them to
+        :return:
+        """
+        args = list(args)
+        if not len(args) >= 2:
+            raise TypeError("You must specify at least 1 name and a value for the set method.")
+        value = args.pop(-1)
+        names = args  # All arguments but last are names
         target = self()  # Calls the __call__ function to get the target (which is a mutable value)
-        target[name] = value  # Sets the final target to the desired value
+        for name in names:
+            target[name] = value  # Sets the final target to the desired value
         if self.file.autosave:
             self.file.save()
 
@@ -92,15 +108,16 @@ class Node(object):
             file.switch_to_file(file.name)  # Reload the file object
         self.__init__(file)
 
-    def delete(self, name='') -> None:
+    def delete(self, *names) -> None:
         """
         Deletes the Node or the specified child Node
-        :param name: If set, deletes a child Node, otherwise the function will delete this Node.
+        :param names: If set, deletes the specified child Nodes, otherwise the function will delete this Node.
         :return:
         """
-        if name:
+        if names:
             target = self()
-            target.pop(name)
+            for name in names:
+                target.pop(name)
         else:
             if self.path:  # Root node will have a path equal to []
                 target = self.file.data
@@ -128,10 +145,11 @@ class Node(object):
         else:  # "None" for pure-data Nodes
             return str(self.file.name)
 
-    def has(self, item) -> bool:
+    def has(self, *items) -> bool:
         """
         Check if the specified child Node exists
-        :param item: The item to check for
+        :param items: The items to check for
         :return:
         """
-        return True if item in self.values else False
+        for item in items:
+            return True if item in self.values else False
