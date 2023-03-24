@@ -72,6 +72,10 @@ class FileReading(unittest.TestCase):
             with self.subTest(msg=db.file.filetype):
                 self.assertEqual(db.b.c(), 2)
 
+    def test_star_args(self):
+        db = Node(LOADABLE[0])
+        self.assertEqual(str(db.get('a', 'b')), "[1, Node({'c': 2})]")  # str(list) -> list(*repr(item)) for some reason
+
     def test_serialized_read(self):
         db = Node('tests/serialized.pyn')
         self.assertEqual(db.time(), dt(2023, 3, 6, 21, 2, 8, 550653))
@@ -92,6 +96,17 @@ class FileModification(unittest.TestCase):
         db = Node({'a': {'b': {}}})
         db.a.b.set('c', 3)
         self.assertEqual(db.a.b.c(), 3)
+
+    def test_star_args(self):
+        db = Node({'a': 1, 'b': 15})
+        with self.subTest(msg="Without creation"):
+            db.set('a', 'b', 2)
+            self.assertEqual(db.a(), 2)
+            self.assertEqual(db.b(), 2)
+        with self.subTest(msg="With creation"):
+            db.set('a', 'b', 'c', True)
+            for item in 'abc':
+                self.assertTrue(db.get(item)())
 
     def test_alternate_set(self):
         db = Node({})
@@ -181,6 +196,11 @@ class DeletionTests(unittest.TestCase):
         # noinspection PyCallingNonCallable
         self.assertEqual(db(), {'a': {}, 'b': "test"})
 
+    def test_star_args(self):
+        db = Node({'a': '', 'b': '', 'c': ''})
+        db.delete(*'abc')
+        self.assertEqual(db(), {})
+
 
 class FileScanningTests(unittest.TestCase):
     def setUp(self):
@@ -188,6 +208,9 @@ class FileScanningTests(unittest.TestCase):
 
     def test_has(self):
         self.assertTrue(self.db.has("val1"))
+
+    def test_has_star_args(self):
+        self.assertTrue(self.db.has("val1", "val2"))
 
     def test_values(self):
         self.assertEqual(self.db.values, ["val1", "val2"])
