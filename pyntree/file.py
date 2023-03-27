@@ -55,12 +55,11 @@ class File:
         :param filetype: The type of data stored/to store
         :param autosave: Save the file when Nodes are updated
         :param save_on_close: Whether to save the file when this object is destroyed (irrelevant if autosave = True)
+        :param password: (Requires optional encryption depencies) Password to protect the file with
+        :param salt: Optional salt for the encryption process
         """
-        if password and not encryption:  # Encryption support not installed
-            raise Error.EncryptionNotAvailable(
-                'Your system is missing the packages needed to support encryption. Please run \
-                "pip install pyntree[encryption]" to install these non-standard packages.'
-            )
+        self.password = password
+        self.salt = salt
         self.autosave = autosave
         self.save_on_close = save_on_close
         self.file = None
@@ -78,14 +77,24 @@ class File:
         :return: The data currently stored in the file
         """
         self.file.seek(0)
+        data = self.file.read()
+
+        if self.password:
+            if not encryption:  # Encryption support not installed
+                raise Error.EncryptionNotAvailable(
+                    'Your system is missing the packages needed to support encryption. Please run \
+                    "pip install pyntree[encryption]" to install these non-standard packages.'
+                )
+            data = encryption.decrypt(data, self.password, self.salt)
+
         if self.filetype == 'pyn':
-            return pickle.loads(self.file.read(), None)
+            return pickle.loads(data, None)
         elif self.filetype == 'json':
-            return json.loads(self.file.read())
+            return json.loads(data)
         elif self.filetype == 'txt':
-            return eval(self.file.read())
+            return eval(data)
         elif self.filetype in pickle.get_known_compressions():
-            return pickle.loads(self.file.read(), self.filetype)
+            return pickle.loads(data, self.filetype)
 
     # noinspection PyAttributeOutsideInit
     def switch_to_file(self, filename, filetype=None) -> None:
@@ -134,6 +143,7 @@ class File:
                 "You have not specified a filename for this data. "
                 "Try setting the filename parameter or use switch_to_file."
             )
+        
         if self.filetype == 'pyn':
             to_write = pickle.dumps(self.data, None)
         elif self.filetype == 'json':
@@ -142,6 +152,15 @@ class File:
             to_write = str(self.data)
         elif self.filetype in pickle.get_known_compressions():
             to_write = pickle.dumps(self.data, self.filetype)
+
+        if self.password:
+            if not encryption:  # Encryption support not installed
+                raise Error.EncryptionNotAvailable(
+                    'Your system is missing the packages needed to support encryption. Please run \
+                    "pip install pyntree[encryption]" to install these non-standard packages.'
+                )
+            to_write = encryption.encrypt(to_write, self.password, self.salt)
+        
         self.file.seek(0)
         self.file.write(to_write)
         self.file.truncate()

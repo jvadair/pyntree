@@ -47,7 +47,8 @@ class Node(object):
         for name in names:
             try:
                 if name not in self():  # If key doesn't exist
-                    raise Error.NameNotFound(f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
+                    raise Error.NameNotFound(
+                        f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
             except TypeError:  # Throw something more descriptive/accurate
                 raise Error.NotANode(f"<RootNode>.{'.'.join(self.path)} is {type(self()).__name__}, not Node.")
             requested.append(Node(file=self.file, path=self.path + [name]))
