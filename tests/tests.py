@@ -213,7 +213,7 @@ class FileScanningTests(unittest.TestCase):
         self.assertTrue(self.db.has("val1", "val2"))
 
     def test_values(self):
-        self.assertEqual(self.db.values, ["val1", "val2"])
+        self.assertEqual(self.db._values, ["val1", "val2"])
 
     def test__str__(self):
         self.assertEqual(str(self.db), str({"val1": 'h', "val2": 'b'}))
@@ -228,13 +228,13 @@ class FileScanningTests(unittest.TestCase):
         self.assertEqual(repr(self.db.val1), "'h'")
 
     def test_name_layer_0_data(self):
-        self.assertEqual(self.db.name, 'None')
+        self.assertEqual(self.db._name, 'None')
 
     def test_name_layer_0_file(self):
-        self.assertEqual(Node('tests/sample.txt').name, 'tests/sample.txt')
+        self.assertEqual(Node('tests/sample.txt')._name, 'tests/sample.txt')
 
     def test_name_layer_1(self):
-        self.assertEqual(self.db.val1.name, 'val1')
+        self.assertEqual(self.db.val1._name, 'val1')
 
 
 if __name__ == '__main__':

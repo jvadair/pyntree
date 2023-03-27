@@ -128,7 +128,7 @@ class Node(object):
                 self.file.data = {}
 
     @property
-    def values(self) -> List[str]:
+    def _values(self) -> List[str]:
         """
         Returns the list of child Nodes this Node contains
         :return:
@@ -136,7 +136,7 @@ class Node(object):
         return list(self().keys())
 
     @property
-    def name(self) -> str:
+    def _name(self) -> str:
         """
         :return: The name of the child Node, or the filename for root Nodes, or 'None' for root nodes without a filename
         """
@@ -145,6 +145,13 @@ class Node(object):
         else:  # "None" for pure-data Nodes
             return str(self.file.name)
 
+    @property
+    def _val(self) -> Any:
+        """
+        :return: The Node's value, as it would be returned by __call__
+        """
+        return self()
+
     def has(self, *items) -> bool:
         """
         Check if the specified child Node exists
@@ -152,4 +159,4 @@ class Node(object):
         :return:
         """
         for item in items:
-            return True if item in self.values else False
+            return True if item in self._values else False
