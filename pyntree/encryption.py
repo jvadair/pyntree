@@ -2,9 +2,10 @@ try:
     from cryptography.fernet import Fernet
     from argon2.low_level import hash_secret_raw, Type
     import base64
-except:
     from pyntree.errors import Error
-    raise Error.EncryptionNotAvailable()
+    SUPPORTED = True
+except:
+    SUPPORTED = False
 
 
 def derive_key(password: str, salt: bytes):
@@ -32,3 +33,11 @@ def decrypt(data: bytes, password: str, salt: bytes):
     key = derive_key(password, salt)
     f = Fernet(key)
     return f.decrypt(data)
+
+
+def check():  # Determine whether the necessary packages are installed
+    if not SUPPORTED:
+        raise Error.EncryptionNotAvailable(
+            'Your system is missing the packages needed to support encryption. Please run \
+            "pip install pyntree[encryption]" to install these non-standard packages.'
+        )

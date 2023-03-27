@@ -4,11 +4,7 @@ import compress_pickle as pickle
 import json
 
 # Optional imports
-try:
-    import encryption
-except Error.EncryptionNotAvailable:
-    encryption = False
-
+from pyntree import encryption
 
 EXTENSIONS = {
     "txt": "txt",
@@ -80,19 +76,15 @@ class File:
         data = self.file.read()
 
         if self.password:
-            if not encryption:  # Encryption support not installed
-                raise Error.EncryptionNotAvailable(
-                    'Your system is missing the packages needed to support encryption. Please run \
-                    "pip install pyntree[encryption]" to install these non-standard packages.'
-                )
+            encryption.check()
             data = encryption.decrypt(data, self.password, self.salt)
 
         if self.filetype == 'pyn':
             return pickle.loads(data, None)
         elif self.filetype == 'json':
-            return json.loads(data)
+            return json.loads(data.decode())
         elif self.filetype == 'txt':
-            return eval(data)
+            return eval(data.decode())
         elif self.filetype in pickle.get_known_compressions():
             return pickle.loads(data, self.filetype)
 
@@ -109,18 +101,21 @@ class File:
             self.file.close()
         if filetype is None:
             self.filetype = infer_filetype(filename)
+        else:
+            self.filetype = filetype
         if not exists(filename):
             with open(filename, 'wb') as file:  # Create file in proper format if it doesn't exist
                 if self.filetype in ('json', 'txt'):
-                    file.write(b'{}')
+                    to_write = b'{}'
                 elif self.filetype == 'pyn':
-                    file.write(pickle.dumps({}, None))
+                    to_write = pickle.dumps({}, None)
                 else:
-                    file.write(pickle.dumps({}, self.filetype))
-        if self.filetype == 'pyn' or self.filetype in pickle.get_known_compressions():
-            self.file = open(filename, 'rb+')
-        else:
-            self.file = open(filename, 'r+')
+                    to_write = pickle.dumps({}, self.filetype)
+                if self.password:
+                    encryption.check()
+                    to_write = encryption.encrypt(to_write, self.password, self.salt)
+                file.write(to_write)
+        self.file = open(filename, 'rb+')
 
     def reload(self):
         """
@@ -147,18 +142,14 @@ class File:
         if self.filetype == 'pyn':
             to_write = pickle.dumps(self.data, None)
         elif self.filetype == 'json':
-            to_write = json.dumps(self.data, sort_keys=True, indent=2)
+            to_write = json.dumps(self.data, sort_keys=True, indent=2).encode()
         elif self.filetype == 'txt':
-            to_write = str(self.data)
+            to_write = str(self.data).encode()
         elif self.filetype in pickle.get_known_compressions():
             to_write = pickle.dumps(self.data, self.filetype)
 
         if self.password:
-            if not encryption:  # Encryption support not installed
-                raise Error.EncryptionNotAvailable(
-                    'Your system is missing the packages needed to support encryption. Please run \
-                    "pip install pyntree[encryption]" to install these non-standard packages.'
-                )
+            encryption.check()
             to_write = encryption.encrypt(to_write, self.password, self.salt)
         
         self.file.seek(0)
