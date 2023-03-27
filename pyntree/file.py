@@ -3,6 +3,13 @@ from pyntree.errors import Error
 import compress_pickle as pickle
 import json
 
+# Optional imports
+try:
+    import encryption
+except Error.EncryptionNotAvailable:
+    encryption = False
+
+
 EXTENSIONS = {
     "txt": "txt",
     "pyn": "pyn",
@@ -28,7 +35,9 @@ class File:
             data,
             filetype=None,
             autosave=False,
-            save_on_close=False
+            save_on_close=False,
+            password=None,
+            salt=b'pyntree_default'  # Default salt value for those who just want to use a password
     ) -> None:
 
         """
@@ -47,6 +56,11 @@ class File:
         :param autosave: Save the file when Nodes are updated
         :param save_on_close: Whether to save the file when this object is destroyed (irrelevant if autosave = True)
         """
+        if password and not encryption:  # Encryption support not installed
+            raise Error.EncryptionNotAvailable(
+                'Your system is missing the packages needed to support encryption. Please run \
+                "pip install pyntree[encryption]" to install these non-standard packages.'
+            )
         self.autosave = autosave
         self.save_on_close = save_on_close
         self.file = None
