@@ -17,12 +17,13 @@ classifiers = [
     "Operating System :: OS Independent",
     "Topic :: Database",
 ]
-keywords = ["database", "pyntree", "pyndb", "python"]
+keywords = ["database", "pyntree", "pyndb", "python", "encryption", "crypto", "cryptography", "security"]
 requires-python = ">=3.7.3"
 
 [project.optional-dependencies]  # Format: pip3 install pyntree[dev]
 lz4 = ["compress_pickle[lz4]"]
 dev = ["pipreqs", "build", "twine"]
+encryption = ["cryptography", "argon2-cffi"]
 
 [project.urls]
 Homepage = "https://github.com/jvadair/pyntree"

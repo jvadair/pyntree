@@ -6,7 +6,7 @@ from datetime import datetime as dt
 
 os.chdir("..")
 
-LOADABLE = [
+BASIC_FILES = [
     'tests/sample.txt',
     {'a': 1, 'b': {'c': 2}},
     "tests/sample.pyn",
@@ -14,14 +14,22 @@ LOADABLE = [
     "tests/sample.json"
 ]
 
-EXTRA = [  # These hold different data
+ENCRYPTED_FILES = [
+    "tests/encrypted.pyn",
+    "tests/encrypted.json",
+    "tests/encrypted.txt",
+    "tests/encrypted.zip"
+]
+
+ADVANCED_FILES = [  # These hold different data, or load in different ways
     "tests/node-in-node.pyn"
 ]
 
 
+# noinspection PyMethodMayBeStatic,PyUnusedLocal
 class FileLoading(unittest.TestCase):
     def test_basic_load(self):
-        for item in LOADABLE:
+        for item in BASIC_FILES:
             with self.subTest(msg=str(item)):
                 db = Node(item)
 
@@ -50,11 +58,21 @@ class FileLoading(unittest.TestCase):
                 db = Node(f'tests/newdb.{ext}')
                 os.remove(f'tests/newdb.{ext}')
 
+    def test_encryption(self):
+        for item in ENCRYPTED_FILES:
+            with self.subTest(msg=str(item)):
+                db = Node(item, password="testing")
+
+    def test_encryption_newfile(self):
+        db = Node('tests/newdb.enc', filetype='pyn', password='pyntree', salt=os.urandom(32))
+        os.remove('tests/newdb.enc')
+
 
 class FileReading(unittest.TestCase):
     def setUp(self):
-        self.databases = [Node(i) for i in LOADABLE]
-        self.databases.append(Node(EXTRA[0]).data())
+        self.databases = [Node(i) for i in BASIC_FILES]
+        self.databases.append(Node(ADVANCED_FILES[0]).data())
+        self.databases += [Node(i, password='testing') for i in ENCRYPTED_FILES]
 
     def test_layer_0(self):
         for db in self.databases:
@@ -73,7 +91,7 @@ class FileReading(unittest.TestCase):
                 self.assertEqual(db.b.c(), 2)
 
     def test_star_args(self):
-        db = Node(LOADABLE[0])
+        db = Node(BASIC_FILES[0])
         self.assertEqual(str(db.get('a', 'b')), "[1, Node({'c': 2})]")  # str(list) -> list(*repr(item)) for some reason
 
     def test_serialized_read(self):
@@ -115,6 +133,7 @@ class FileModification(unittest.TestCase):
         self.assertEqual(db.z(), 1)
 
 
+# noinspection PyMethodMayBeStatic
 class FileSaving(unittest.TestCase):
     def setUp(self):
         self.filetypes = EXTENSIONS.keys()
@@ -133,6 +152,13 @@ class FileSaving(unittest.TestCase):
         db.save('tests/testing_serialization.pyn')
         os.remove('tests/testing_serialization.pyn')
         self.assertTrue(True)
+
+    def test_encrypted_save(self):
+        for ext in EXTENSIONS:
+            with self.subTest(msg=ext):
+                db = Node({'a': 1, 'b': {'c': 2}}, password='testing')
+                db.save(f'tests/newdb.{ext}')
+                os.remove(f'tests/newdb.{ext}')
 
     def test_save_to_alternate_file(self):
         # Initial data

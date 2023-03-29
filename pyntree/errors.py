@@ -7,3 +7,6 @@ class Error:
 
     class NotANode(Exception):
         pass
+
+    class EncryptionNotAvailable(Exception):
+        pass
