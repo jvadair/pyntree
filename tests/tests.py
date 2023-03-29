@@ -14,9 +14,15 @@ BASIC_FILES = [
     "tests/sample.json"
 ]
 
+ENCRYPTED_FILES = [
+    "tests/encrypted.pyn",
+    "tests/encrypted.json",
+    "tests/encrypted.txt",
+    "tests/encrypted.zip"
+]
+
 ADVANCED_FILES = [  # These hold different data, or load in different ways
-    "tests/node-in-node.pyn",
-    "tests/encrypted.pyn"
+    "tests/node-in-node.pyn"
 ]
 
 
@@ -53,7 +59,9 @@ class FileLoading(unittest.TestCase):
                 os.remove(f'tests/newdb.{ext}')
 
     def test_encryption(self):
-        db = Node(ADVANCED_FILES[1], password='helloworld')
+        for item in ENCRYPTED_FILES:
+            with self.subTest(msg=str(item)):
+                db = Node(item, password="testing")
 
     def test_encryption_newfile(self):
         db = Node('tests/newdb.enc', filetype='pyn', password='pyntree', salt=os.urandom(32))
@@ -64,7 +72,7 @@ class FileReading(unittest.TestCase):
     def setUp(self):
         self.databases = [Node(i) for i in BASIC_FILES]
         self.databases.append(Node(ADVANCED_FILES[0]).data())
-        self.databases.append(Node(ADVANCED_FILES[1], password='helloworld'))
+        self.databases += [Node(i, password='testing') for i in ENCRYPTED_FILES]
 
     def test_layer_0(self):
         for db in self.databases:
@@ -148,7 +156,7 @@ class FileSaving(unittest.TestCase):
     def test_encrypted_save(self):
         for ext in EXTENSIONS:
             with self.subTest(msg=ext):
-                db = Node({'a': 1}, password='testing')
+                db = Node({'a': 1, 'b': {'c': 2}}, password='testing')
                 db.save(f'tests/newdb.{ext}')
                 os.remove(f'tests/newdb.{ext}')
 
