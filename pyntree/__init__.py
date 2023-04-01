@@ -137,6 +137,10 @@ class Node(object):
         return list(self().keys())
 
     @property
+    def _children(self) -> List['Node']:
+        return [self.get(n) for n in self._values]
+
+    @property
     def _name(self) -> str:
         """
         :return: The name of the child Node, or the filename for root Nodes, or 'None' for root nodes without a filename
