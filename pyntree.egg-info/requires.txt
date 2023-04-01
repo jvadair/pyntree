@@ -5,5 +5,9 @@ pipreqs
 build
 twine
 
+[encryption]
+cryptography
+argon2-cffi
+
 [lz4]
 compress_pickle[lz4]
