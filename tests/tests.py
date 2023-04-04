@@ -262,6 +262,9 @@ class FileScanningTests(unittest.TestCase):
     def test_name_layer_1(self):
         self.assertEqual(self.db.val1._name, 'val1')
 
+    def test_getdict(self):
+        self.assertEqual(str(dict(self.db)), str({'val1': 'h', 'val2': 'b'}))
+
 
 if __name__ == '__main__':
     unittest.main()

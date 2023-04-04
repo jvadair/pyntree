@@ -47,7 +47,7 @@ class Node(object):
         for name in names:
             try:
                 if name not in self():  # If key doesn't exist
-                    raise Error.NameNotFound(
+                    raise AttributeError(
                         f"<RootNode>.{'.'.join(self.path)}{'.' if self.path else ''}{name} does not exist")
             except TypeError:  # Throw something more descriptive/accurate
                 raise Error.NotANode(f"<RootNode>.{'.'.join(self.path)} is {type(self()).__name__}, not Node.")
@@ -108,6 +108,13 @@ class Node(object):
         if file.name:  # If there is a filename
             file.switch_to_file(file.name)  # Reload the file object
         self.__init__(file)
+
+    def __iter__(self):
+        for k in self._values:
+            yield k, self.get(k)
+
+    def __getitem__(self, item):
+        return self.get(item)()
 
     def delete(self, *names) -> None:
         """
