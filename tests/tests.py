@@ -277,8 +277,80 @@ class FileScanningTests(unittest.TestCase):
     def test_name_layer_1(self):
         self.assertEqual(self.db.val1._name, 'val1')
 
+    def test_get_children(self):
+        self.assertEqual(self.db._children[0](), 'h')
+
+    def test_where(self):
+        db = Node({
+            "a": {
+                "b": 2
+            },
+            "b": {
+                "b": 2
+            },
+            "c": {
+                "b": 3
+            }
+        })
+        matches = db.where(b=2)
+        self.assertEqual(len(matches), 2)
+        self.assertTrue(type(matches[0]) is Node)
+        self.assertEqual(str(matches[0]), str({"b": 2}))
+
+    def test_containing(self):
+        db = Node({
+            "a": {
+                "h": 2
+            },
+            "b": {
+                "b": 2
+            },
+            "c": {
+                "b": 3
+            }
+        })
+        matches = db.containing('b')
+        self.assertEqual(len(matches), 2)
+        self.assertTrue(type(matches[0]) is Node)
+        self.assertEqual(str(matches[0]), str({"b": 2}))
+
     def test_getdict(self):
-        self.assertEqual(str(dict(self.db)), str({'val1': 'h', 'val2': 'b'}))
+        db = Node({'a': {'b': {'c': 1}}})
+        self.assertEqual(str(dict(db)), str({'a': {'b': {'c': 1}}}))
+
+
+# noinspection PyCallingNonCallable
+class ArithmeticTests(unittest.TestCase):
+    def test_iadd_int(self):
+        db = Node()
+        db.a = 1
+        db.a += 1
+        self.assertEqual(db.a(), 2)
+
+    def test_iadd_str(self):
+        db = Node()
+        db.a = 'a'
+        db.a += 'bc'
+        self.assertEqual(db.a(), 'abc')
+
+    def test_isub_int(self):
+        db = Node()
+        db.a = 1
+        db.a -= 1
+        self.assertEqual(db.a(), 0)
+
+    def test_imul_int(self):
+        db = Node()
+        db.a = 2
+        db.a *= 3
+        self.assertEqual(db.a(), 6)
+
+    def test_imul_str(self):
+        db = Node()
+        db.a = 'a'
+        db.a *= 3
+        self.assertEqual(db.a(), 'aaa')
+
 
 
 if __name__ == '__main__':

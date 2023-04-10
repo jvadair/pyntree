@@ -79,6 +79,7 @@ class Node(object):
             target = self.file.data
         return target
 
+    # Representation methods
     def __str__(self):
         """
         :return: A string representation of the data contained within the Node
@@ -111,11 +112,13 @@ class Node(object):
 
     def __iter__(self):
         for k in self._values:
-            yield k, self.get(k)
+            v = self.get(k)()
+            yield k, v
 
     def __getitem__(self, item):
         return self.get(item)()
 
+    # Custom operations
     def delete(self, *names) -> None:
         """
         Deletes the Node or the specified child Node
@@ -135,6 +138,44 @@ class Node(object):
             else:
                 self.file.data = {}
 
+    def has(self, *items) -> bool:
+        """
+        Check if the specified child Node exists
+        :param items: The items to check for
+        :return:
+        """
+        for item in items:
+            return True if item in self._values else False
+
+    def where(self, **kwargs) -> list['Node']:
+        """
+        :param kwargs: Return all children with a child <kwarg> and its corresponding value
+        :return: A list of Nodes matching the criteria
+        """
+        matches = []
+        for name in self._values:
+            child = self.get(name)
+            for kwarg in kwargs:
+                if child.has(kwarg) and child.get(kwarg)() == kwargs[kwarg]:  # Evaluated left to right, so no error
+                    matches.append(child)
+
+        return matches
+
+    def containing(self, *args) -> list['Node']:
+        """
+        :param args: Return all children with children named <*args>
+        :return: A list of Nodes matching the criteria
+        """
+        matches = []
+        for name in self._values:
+            child = self.get(name)
+            for arg in args:
+                if child.has(arg):
+                    matches.append(child)
+
+        return matches
+
+    # Properties
     @property
     def _values(self) -> List[str]:
         """
@@ -142,6 +183,10 @@ class Node(object):
         :return:
         """
         return list(self().keys())
+
+    @property
+    def _children(self) -> List['Node']:
+        return [self.get(n) for n in self._values]
 
     @property
     def _name(self) -> str:
@@ -160,11 +205,31 @@ class Node(object):
         """
         return self()
 
-    def has(self, *items) -> bool:
-        """
-        Check if the specified child Node exists
-        :param items: The items to check for
-        :return:
-        """
-        for item in items:
-            return True if item in self._values else False
+    # Arithmetic operations - only for child Nodes since the operations don't work on dictionaries anyways
+    def __iadd__(self, other):
+        self.file.data[self.path[0]] += other
+        return self()
+
+    def __isub__(self, other):
+        self.file.data[self.path[0]] -= other
+        return self()
+
+    def __imul__(self, other):
+        self.file.data[self.path[0]] *= other
+        return self()
+
+    def __itruediv__(self, other):
+        self.file.data[self.path[0]] /= other
+        return self()
+
+    def __ifloordiv__(self, other):
+        self.file.data[self.path[0]] //= other
+        return self()
+
+    def __imod__(self, other):
+        self.file.data[self.path[0]] %= other
+        return self()
+
+    def __ipow__(self, other):
+        self.file.data[self.path[0]] **= other
+        return self()
