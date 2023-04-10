@@ -315,7 +315,8 @@ class FileScanningTests(unittest.TestCase):
         self.assertEqual(str(matches[0]), str({"b": 2}))
 
     def test_getdict(self):
-        self.assertEqual(str(dict(self.db)), str({'val1': 'h', 'val2': 'b'}))
+        db = Node({'a': {'b': {'c': 1}}})
+        self.assertEqual(str(dict(db)), str({'a': {'b': {'c': 1}}}))
 
 
 # noinspection PyCallingNonCallable

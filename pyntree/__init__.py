@@ -112,7 +112,8 @@ class Node(object):
 
     def __iter__(self):
         for k in self._values:
-            yield k, self.get(k)
+            v = self.get(k)()
+            yield k, v
 
     def __getitem__(self, item):
         return self.get(item)()
