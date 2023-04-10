@@ -153,6 +153,20 @@ class Node(object):
 
         return matches
 
+    def containing(self, *args) -> list['Node']:
+        """
+        :param args: Return all children with children named <*args>
+        :return: A list of Nodes matching the criteria
+        """
+        matches = []
+        for name in self._values:
+            child = self.get(name)
+            for arg in args:
+                if child.has(arg):
+                    matches.append(child)
+
+        return matches
+
     # Properties
     @property
     def _values(self) -> List[str]:

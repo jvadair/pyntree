@@ -280,6 +280,24 @@ class FileScanningTests(unittest.TestCase):
         matches = db.where(b=2)
         self.assertEqual(len(matches), 2)
         self.assertTrue(type(matches[0]) is Node)
+        self.assertEqual(str(matches[0]), str({"b": 2}))
+
+    def test_containing(self):
+        db = Node({
+            "a": {
+                "h": 2
+            },
+            "b": {
+                "b": 2
+            },
+            "c": {
+                "b": 3
+            }
+        })
+        matches = db.containing('b')
+        self.assertEqual(len(matches), 2)
+        self.assertTrue(type(matches[0]) is Node)
+        self.assertEqual(str(matches[0]), str({"b": 2}))
 
 
 # noinspection PyCallingNonCallable
