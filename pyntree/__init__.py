@@ -79,6 +79,7 @@ class Node(object):
             target = self.file.data
         return target
 
+    # Representation methods
     def __str__(self):
         """
         :return: A string representation of the data contained within the Node
@@ -109,6 +110,7 @@ class Node(object):
             file.switch_to_file(file.name)  # Reload the file object
         self.__init__(file)
 
+    # Custom operations
     def delete(self, *names) -> None:
         """
         Deletes the Node or the specified child Node
@@ -128,6 +130,16 @@ class Node(object):
             else:
                 self.file.data = {}
 
+    def has(self, *items) -> bool:
+        """
+        Check if the specified child Node exists
+        :param items: The items to check for
+        :return:
+        """
+        for item in items:
+            return True if item in self._values else False
+
+    # Properties
     @property
     def _values(self) -> List[str]:
         """
@@ -157,11 +169,31 @@ class Node(object):
         """
         return self()
 
-    def has(self, *items) -> bool:
-        """
-        Check if the specified child Node exists
-        :param items: The items to check for
-        :return:
-        """
-        for item in items:
-            return True if item in self._values else False
+    # Arithmetic operations - only four child Nodes since the operations don't work on dictionaries anyways
+    def __iadd__(self, other):
+        self.file.data[self.path[0]] += other
+        return self()
+
+    def __isub__(self, other):
+        self.file.data[self.path[0]] -= other
+        return self()
+
+    def __imul__(self, other):
+        self.file.data[self.path[0]] *= other
+        return self()
+
+    def __itruediv__(self, other):
+        self.file.data[self.path[0]] /= other
+        return self()
+
+    def __ifloordiv__(self, other):
+        self.file.data[self.path[0]] //= other
+        return self()
+
+    def __imod__(self, other):
+        self.file.data[self.path[0]] %= other
+        return self()
+
+    def __ipow__(self, other):
+        self.file.data[self.path[0]] **= other
+        return self()

@@ -266,5 +266,38 @@ class FileScanningTests(unittest.TestCase):
         self.assertEqual(self.db._children[0](), 'h')
 
 
+# noinspection PyCallingNonCallable
+class ArithmeticTests(unittest.TestCase):
+    def test_iadd_int(self):
+        db = Node()
+        db.a = 1
+        db.a += 1
+        self.assertEqual(db.a(), 2)
+
+    def test_iadd_str(self):
+        db = Node()
+        db.a = 'a'
+        db.a += 'bc'
+        self.assertEqual(db.a(), 'abc')
+
+    def test_isub_int(self):
+        db = Node()
+        db.a = 1
+        db.a -= 1
+        self.assertEqual(db.a(), 0)
+
+    def test_imul_int(self):
+        db = Node()
+        db.a = 2
+        db.a *= 3
+        self.assertEqual(db.a(), 6)
+
+    def test_imul_str(self):
+        db = Node()
+        db.a = 'a'
+        db.a *= 3
+        self.assertEqual(db.a(), 'aaa')
+
+
 if __name__ == '__main__':
     unittest.main()
