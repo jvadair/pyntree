@@ -194,6 +194,21 @@ class FileSaving(unittest.TestCase):
         db.save('tests/testing_save_NiN.pyn')
         os.remove('tests/testing_save_NiN.pyn')
 
+    def test_save_after_password_set(self):
+        db = Node({'a': 'b'})
+        db.file.password = 'testing'
+        db.save('tests/testing_encrypted_setpwd.pyn')
+        self.assertEqual(Node('tests/testing_encrypted_setpwd.pyn', password='testing')(), {'a': 'b'})
+        os.remove('tests/testing_encrypted_setpwd.pyn')
+
+    def test_save_after_password_change(self):
+        db = Node('tests/testing_encrypted_changepwd.pyn', password='testing1')
+        db.a = 'b'
+        db.file.password = 'testing2'
+        db.save('tests/testing_encrypted_changepwd.pyn')
+        self.assertEqual(Node('tests/testing_encrypted_changepwd.pyn', password='testing2')(), {'a': 'b'})
+        os.remove('tests/testing_encrypted_changepwd.pyn')
+
 
 class DeletionTests(unittest.TestCase):
     def test_layer_0(self):
@@ -331,6 +346,9 @@ class ArithmeticTests(unittest.TestCase):
         db.a = 'a'
         db.a *= 3
         self.assertEqual(db.a(), 'aaa')
+
+    def test_getdict(self):
+        self.assertEqual(str(dict(self.db)), str({'val1': 'h', 'val2': 'b'}))
 
 
 if __name__ == '__main__':
