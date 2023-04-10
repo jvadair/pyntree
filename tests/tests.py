@@ -265,6 +265,22 @@ class FileScanningTests(unittest.TestCase):
     def test_get_children(self):
         self.assertEqual(self.db._children[0](), 'h')
 
+    def test_where(self):
+        db = Node({
+            "a": {
+                "b": 2
+            },
+            "b": {
+                "b": 2
+            },
+            "c": {
+                "b": 3
+            }
+        })
+        matches = db.where(b=2)
+        self.assertEqual(len(matches), 2)
+        self.assertTrue(type(matches[0]) is Node)
+
 
 # noinspection PyCallingNonCallable
 class ArithmeticTests(unittest.TestCase):

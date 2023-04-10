@@ -139,6 +139,20 @@ class Node(object):
         for item in items:
             return True if item in self._values else False
 
+    def where(self, **kwargs) -> list['Node']:
+        """
+        :param kwargs: Return all children with a child <kwarg> and its corresponding value
+        :return: A list of Nodes matching the criteria
+        """
+        matches = []
+        for name in self._values:
+            child = self.get(name)
+            for kwarg in kwargs:
+                if child.has(kwarg) and child.get(kwarg)() == kwargs[kwarg]:  # Evaluated left to right, so no error
+                    matches.append(child)
+
+        return matches
+
     # Properties
     @property
     def _values(self) -> List[str]:
