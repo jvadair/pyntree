@@ -314,6 +314,9 @@ class FileScanningTests(unittest.TestCase):
         self.assertTrue(type(matches[0]) is Node)
         self.assertEqual(str(matches[0]), str({"b": 2}))
 
+    def test_getdict(self):
+        self.assertEqual(str(dict(self.db)), str({'val1': 'h', 'val2': 'b'}))
+
 
 # noinspection PyCallingNonCallable
 class ArithmeticTests(unittest.TestCase):
@@ -347,8 +350,6 @@ class ArithmeticTests(unittest.TestCase):
         db.a *= 3
         self.assertEqual(db.a(), 'aaa')
 
-    def test_getdict(self):
-        self.assertEqual(str(dict(self.db)), str({'val1': 'h', 'val2': 'b'}))
 
 
 if __name__ == '__main__':
