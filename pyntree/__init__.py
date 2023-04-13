@@ -147,7 +147,7 @@ class Node(object):
         for item in items:
             return True if item in self._values else False
 
-    def where(self, **kwargs) -> list['Node']:
+    def where(self, **kwargs) -> List['Node']:
         """
         :param kwargs: Return all children with a child <kwarg> and its corresponding value
         :return: A list of Nodes matching the criteria
@@ -161,7 +161,7 @@ class Node(object):
 
         return matches
 
-    def containing(self, *args) -> list['Node']:
+    def containing(self, *args) -> List['Node']:
         """
         :param args: Return all children with children named <*args>
         :return: A list of Nodes matching the criteria
