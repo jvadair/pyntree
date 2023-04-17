@@ -2,10 +2,10 @@ try:
     from cryptography.fernet import Fernet
     from argon2.low_level import hash_secret_raw, Type
     import base64
-    from pyntree.errors import Error
     SUPPORTED = True
 except:
     SUPPORTED = False
+    from pyntree.errors import Error
 
 
 def derive_key(password: str, salt: bytes):
