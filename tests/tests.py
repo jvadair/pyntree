@@ -351,6 +351,17 @@ class ArithmeticTests(unittest.TestCase):
         db.a *= 3
         self.assertEqual(db.a(), 'aaa')
 
+    def test_cmp(self):
+        db = Node()
+        db.a = 1
+        db.b = 2
+        self.assertTrue(db.a < db.b)
+        self.assertTrue(db.a <= db.b)
+        self.assertFalse(db.a > db.b)
+        self.assertFalse(db.a >= db.b)
+        self.assertFalse(db.a == db.b)
+        self.assertTrue(db.a != db.b)
+
 
 
 if __name__ == '__main__':

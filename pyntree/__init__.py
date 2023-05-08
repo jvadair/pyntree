@@ -233,3 +233,23 @@ class Node(object):
     def __ipow__(self, other):
         self.file.data[self.path[0]] **= other
         return self()
+
+    # Comparison methods (<, >, <=, >=, ==, !=)
+    def __lt__(self, other):
+        return True if self() < other() else False
+
+    def __le__(self, other):
+        return True if self() <= other() else False
+
+    def __gt__(self, other):
+        return True if self() > other() else False
+
+    def __ge__(self, other):
+        return True if self() >= other() else False
+
+    def __eq__(self, other):
+        return True if self() == other() else False
+
+    def __ne__(self, other):
+        return True if self() != other() else False
+
