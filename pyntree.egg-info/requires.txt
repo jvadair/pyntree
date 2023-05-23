@@ -4,6 +4,7 @@ compress_pickle>=2.1.0
 pipreqs
 build
 twine
+requests
 
 [encryption]
 cryptography
