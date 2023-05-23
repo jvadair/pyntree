@@ -175,6 +175,19 @@ class Node(object):
 
         return matches
 
+    def update(self, key, val):
+        """
+        An alternate and faster way to update vales
+        :param key: key value to index
+        :param val: updated value
+        :return:
+        """
+        if key in self._values:
+            self._values[key] = val
+        else:
+            raise KeyError(f"Value {key} is not defined")
+        return
+
     # Properties
     @property
     def _values(self) -> List[str]:
@@ -253,3 +266,83 @@ class Node(object):
     def __ne__(self, other):
         return True if self() != other() else False
 
+    # Math/Stat Operations
+    def avr(self, key=None):
+        """
+        :param key: Key for specific scope
+        :return: Average from value array
+        """
+        try:
+            if key is None:
+                avr_value = sum(self._values) / len(self._values)
+            else:
+                avr_value = sum(self._values[key]) / len(self._values[key])
+        except TypeError:
+            raise TypeError("Invalid type, unsupported operand type(s) for +: 'int/float' and 'str'")
+        except KeyError:
+            raise KeyError(f"Value {key} is not defined")
+        return avr_value
+
+    def sum(self, key=None):
+        """
+        :param key: Key for specific scope
+        :return: Sum from value array
+        """
+        try:
+            if key is None:
+                sum_value = sum(self._values)
+            else:
+                sum_value = sum(self._values[key])
+        except TypeError:
+            raise TypeError("Invalid type, unsupported operand type(s) for +: 'int/float' and 'str'")
+        except KeyError:
+            raise KeyError(f"Value {key} is not defined")
+        return sum_value
+
+    def max(self, key=None):
+        """
+        :param key: Key for specific scope
+        :return: Max from value array
+        """
+        try:
+            if key is None:
+                max_value = max(self._values)
+            else:
+                max_value = max(self._values[key])
+        except TypeError:
+            raise TypeError("Invalid type, unsupported operand type(s) for +: 'int/float' and 'str'")
+        except KeyError:
+            raise KeyError(f"Value {key} is not defined")
+        return max_value
+
+    def min(self, key=None):
+        """
+        :param key: Key for specific scope
+        :return: Min from value array
+        """
+        try:
+            if key is None:
+                min_value = min(self._values)
+            else:
+                min_value = min(self._values[key])
+        except TypeError:
+            raise TypeError("Invalid type, unsupported operand type(s) for +: 'int/float' and 'str'")
+        except KeyError:
+            raise KeyError(f"Value {key} is not defined")
+        return min_value
+
+    def count(self, key=None):
+        """
+        :param key: Key for specific scope
+        :return: Length of array
+        """
+        try:
+            if key is None:
+                count_value = len(self._values)
+            else:
+                count_value = len(self._values[key])
+        except TypeError:
+            raise TypeError("Invalid type, unsupported operand type(s) for +: 'int/float' and 'str'")
+        except KeyError:
+            raise KeyError(f"Value {key} is not defined")
+        return count_value
