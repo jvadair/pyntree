@@ -158,6 +158,12 @@ class File:
         if filename and old_filename:  # If the old filename was None, then it can't be switched back to
             self.switch_to_file(old_filename)
 
+    def get_nested(self, *args):
+        found = self.data
+        for child in args:
+            found = found[child]  # Move 1 deeper towards the target
+        return found
+
     def __del__(self) -> None:
         """
         Garbage collector function for implementing save_on_close and properly closing the file object

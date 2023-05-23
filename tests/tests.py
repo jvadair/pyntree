@@ -362,6 +362,10 @@ class ArithmeticTests(unittest.TestCase):
         self.assertFalse(db.a == db.b)
         self.assertTrue(db.a != db.b)
 
+    def test_nested_operations(self):
+        db = Node({'a': {'b': 1}})
+        db.a.b += 1
+        self.assertEqual(db.a.b(), 2)
 
 
 if __name__ == '__main__':
