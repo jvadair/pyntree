@@ -24,6 +24,7 @@ requires-python = ">=3.7.3"
 lz4 = ["compress_pickle[lz4]"]
 dev = ["pipreqs", "build", "twine"]
 encryption = ["cryptography", "argon2-cffi"]
+full = ["pyntree[encryption]", "pyntree[lz4]"]
 
 [project.urls]
 Homepage = "https://github.com/jvadair/pyntree"
