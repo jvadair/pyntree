@@ -318,6 +318,13 @@ class FileScanningTests(unittest.TestCase):
         db = Node({'a': {'b': {'c': 1}}})
         self.assertEqual(str(dict(db)), str({'a': {'b': {'c': 1}}}))
 
+    def test_retrieve(self):
+        db = Node({'a': {'b': {'c': 'd'}}})
+        self.assertEqual(db.retrieve(('a', 'b', 'c'))._val, 'd')
+        self.assertEqual(db.retrieve(['a'])._val, {'b': {'c': 'd'}})
+        with self.assertRaises(TypeError):
+            db.retrieve(())
+
 
 # noinspection PyCallingNonCallable
 class ArithmeticTests(unittest.TestCase):
@@ -361,7 +368,6 @@ class ArithmeticTests(unittest.TestCase):
         self.assertFalse(db.a >= db.b)
         self.assertFalse(db.a == db.b)
         self.assertTrue(db.a != db.b)
-
 
 
 if __name__ == '__main__':
