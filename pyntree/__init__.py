@@ -1,6 +1,6 @@
 from pyntree.file import File
 from pyntree.errors import Error
-from typing import Union, Any, List
+from typing import Union, Any, List, Tuple
 
 
 class Node(object):
@@ -104,6 +104,7 @@ class Node(object):
         # Note: The path information will be discarded. This is intentional.
         return trim
 
+    # noinspection PyShadowingNames
     def __setstate__(self, state):
         file = state
         if file.name:  # If there is a filename
@@ -188,6 +189,20 @@ class Node(object):
             raise KeyError(f"Value {key} is not defined")
         return
 
+    def retrieve(self, path: Union[List, Tuple]) -> 'Node':
+        """
+        Dynamically retrives a nested Node given a list of names.
+        This could be statically written as Node.a.b.c
+        :param path: A list of names corresponding to a child.
+        """
+        if path:
+            found = self
+            for child in path:
+                found = found.get(child)  # Move 1 deeper towards the target
+            return found
+        else:
+            raise TypeError("Path must not be empty.")
+
     # Properties
     @property
     def _values(self) -> List[str]:
@@ -218,7 +233,7 @@ class Node(object):
         """
         return self()
 
-    # Arithmetic operations - only for child Nodes since the operations don't work on dictionaries anyways
+    # Arithmetic operations - only for child Nodes since the operations don't work on dictionaries anyway
     def __iadd__(self, other):
         self.file.data[self.path[0]] += other
         return self()
