@@ -125,7 +125,7 @@ class File:
         self.data = self.read_data()
 
     # noinspection PyUnboundLocalVariable
-    def save(self, filename=None) -> None:
+    def save(self, filename=None, password=None) -> None:
         """
         Saves the data to the file
         :param filename: If set, the Node will save to the specified file and then reload its original file object
@@ -150,7 +150,10 @@ class File:
 
         if self.password:
             encryption.check()
-            to_write = encryption.encrypt(to_write, self.password, self.salt)
+            if password:
+                to_write = encryption.encrypt(to_write, password, self.salt)
+            else:
+                to_write = encryption.encrypt(to_write, self.password, self.salt)
         
         self.file.seek(0)
         self.file.write(to_write)

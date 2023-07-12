@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyntree
-Version: 1.2.1
+Version: 1.2.2
 Summary: pyntree is a python package which allows you to easily and syntactically save your data. Not only that, it also lets you save in multiple formats, and even serialize and compress data by merely changing a few characters.
 Author-email: jvadair <dev@jvadair.com>
 License:                                  Apache License
