@@ -162,6 +162,7 @@ class FileSaving(unittest.TestCase):
 
     def test_encrypted_save_method(self):
         Node({'a': 1}).save('tests/newdb.pyn', password='testing')
+        Node('tests/newdb.pyn', password='testing')  # Attempt load to verify a proper save
         os.remove('tests/newdb.pyn')
 
     def test_save_to_alternate_file(self):

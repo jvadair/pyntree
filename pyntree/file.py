@@ -129,6 +129,7 @@ class File:
         """
         Saves the data to the file
         :param filename: If set, the Node will save to the specified file and then reload its original file object
+        :param password: Set or override the encryption password. This will also change the password parameter.
         """
         if filename:  # Only keeps 1 file in memory at a time
             old_filename = self.name
@@ -148,12 +149,11 @@ class File:
         elif self.filetype in pickle.get_known_compressions():
             to_write = pickle.dumps(self.data, self.filetype)
 
+        if password:
+            self.password = password
         if self.password:
             encryption.check()
-            if password:
-                to_write = encryption.encrypt(to_write, password, self.salt)
-            else:
-                to_write = encryption.encrypt(to_write, self.password, self.salt)
+            to_write = encryption.encrypt(to_write, self.password, self.salt)
         
         self.file.seek(0)
         self.file.write(to_write)
