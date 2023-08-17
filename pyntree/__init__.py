@@ -137,6 +137,8 @@ class Node(object):
                 target.pop(self.path[-1])
             else:
                 self.file.data = {}
+        if self.file.autosave:
+            self.file.save()
 
     def has(self, *items) -> bool:
         """
