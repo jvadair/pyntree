@@ -138,6 +138,8 @@ class Node(object):
                 target.pop(self.path[-1])
             else:
                 self.file.data = {}
+        if self.file.autosave:
+            self.file.save()
 
     def has(self, *items) -> bool:
         """
@@ -235,31 +237,31 @@ class Node(object):
 
     # Arithmetic operations - only for child Nodes since the operations don't work on dictionaries anyway
     def __iadd__(self, other):
-        self.file.data[self.path[0]] += other
+        self.file.get_nested(*self.path[:-1])[self.path[-1]] += other
         return self()
 
     def __isub__(self, other):
-        self.file.data[self.path[0]] -= other
+        self.file.get_nested(*self.path[:-1])[self.path[-1]] -= other
         return self()
 
     def __imul__(self, other):
-        self.file.data[self.path[0]] *= other
+        self.file.get_nested(*self.path[:-1])[self.path[-1]] *= other
         return self()
 
     def __itruediv__(self, other):
-        self.file.data[self.path[0]] /= other
+        self.file.get_nested(*self.path[:-1])[self.path[-1]] /= other
         return self()
 
     def __ifloordiv__(self, other):
-        self.file.data[self.path[0]] //= other
+        self.file.get_nested(*self.path[:-1])[self.path[-1]] //= other
         return self()
 
     def __imod__(self, other):
-        self.file.data[self.path[0]] %= other
+        self.file.get_nested(*self.path[:-1])[self.path[-1]] %= other
         return self()
 
     def __ipow__(self, other):
-        self.file.data[self.path[0]] **= other
+        self.file.get_nested(*self.path[:-1])[self.path[-1]] **= other
         return self()
 
     # Comparison methods (<, >, <=, >=, ==, !=)
