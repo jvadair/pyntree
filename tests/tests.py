@@ -160,6 +160,11 @@ class FileSaving(unittest.TestCase):
                 db.save(f'tests/newdb.{ext}')
                 os.remove(f'tests/newdb.{ext}')
 
+    def test_encrypted_save_method(self):
+        Node({'a': 1}).save('tests/newdb.pyn', password='testing')
+        Node('tests/newdb.pyn', password='testing')  # Attempt load to verify a proper save
+        os.remove('tests/newdb.pyn')
+
     def test_save_to_alternate_file(self):
         # Initial data
         db = Node({'a': 1, 'b': {'c': 2}})
@@ -369,6 +374,10 @@ class ArithmeticTests(unittest.TestCase):
         self.assertFalse(db.a == db.b)
         self.assertTrue(db.a != db.b)
 
+    def test_nested_operations(self):
+        db = Node({'a': {'b': 1}})
+        db.a.b += 1
+        self.assertEqual(db.a.b(), 2)
 
 if __name__ == '__main__':
     unittest.main()

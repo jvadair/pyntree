@@ -125,10 +125,11 @@ class File:
         self.data = self.read_data()
 
     # noinspection PyUnboundLocalVariable
-    def save(self, filename=None) -> None:
+    def save(self, filename=None, password=None) -> None:
         """
         Saves the data to the file
         :param filename: If set, the Node will save to the specified file and then reload its original file object
+        :param password: Set or override the encryption password. This will also change the password parameter.
         """
         if filename:  # Only keeps 1 file in memory at a time
             old_filename = self.name
@@ -148,6 +149,8 @@ class File:
         elif self.filetype in pickle.get_known_compressions():
             to_write = pickle.dumps(self.data, self.filetype)
 
+        if password:
+            self.password = password
         if self.password:
             encryption.check()
             to_write = encryption.encrypt(to_write, self.password, self.salt)
@@ -157,6 +160,12 @@ class File:
         self.file.truncate()
         if filename and old_filename:  # If the old filename was None, then it can't be switched back to
             self.switch_to_file(old_filename)
+
+    def get_nested(self, *args):
+        found = self.data
+        for child in args:
+            found = found[child]  # Move 1 deeper towards the target
+        return found
 
     def __del__(self) -> None:
         """
