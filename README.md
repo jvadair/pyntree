@@ -28,7 +28,7 @@ Node(data).save('file.pyn')  # 1-liner to save your data to a file!
 pyntree is capable of handling the following files, functions, and formats:
 - Dictionaries in plain text
 - Pickled files/serialization
-- JSON files
+- JSON & YAML files
 - Encryption
 - Backwards compatibility with files saved by pyndb (except encrypted files)
 - Compression in many popular formats

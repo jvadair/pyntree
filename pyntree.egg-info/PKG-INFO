@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyntree
-Version: 1.2.4
+Version: 1.3.0
 Summary: pyntree is a python package which allows you to easily and syntactically save your data. Not only that, it also lets you save in multiple formats, and even serialize and compress data by merely changing a few characters.
 Author-email: jvadair <dev@jvadair.com>
 License:                                  Apache License
@@ -207,7 +207,7 @@ License:                                  Apache License
         
 Project-URL: Homepage, https://github.com/jvadair/pyntree
 Project-URL: Documentation, https://pen.jvadair.com/books/pyntree
-Keywords: database,pyntree,pyndb,python,encryption,crypto,cryptography,security
+Keywords: database,pyntree,pyndb,python,encryption,crypto,cryptography,security,json,yaml,pickle,serial,compress,nosql
 Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
@@ -215,10 +215,19 @@ Classifier: Operating System :: OS Independent
 Classifier: Topic :: Database
 Requires-Python: >=3.7.3
 Description-Content-Type: text/markdown
-Provides-Extra: lz4
-Provides-Extra: dev
-Provides-Extra: encryption
 License-File: LICENSE.txt
+Requires-Dist: compress_pickle>=2.1.0
+Requires-Dist: pyyaml
+Provides-Extra: lz4
+Requires-Dist: compress_pickle[lz4]; extra == "lz4"
+Provides-Extra: dev
+Requires-Dist: pipreqs; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: requests; extra == "dev"
+Provides-Extra: encryption
+Requires-Dist: cryptography; extra == "encryption"
+Requires-Dist: argon2-cffi; extra == "encryption"
 
 ![](img/pyntree-banner.jpeg)
 
@@ -250,7 +259,7 @@ Node(data).save('file.pyn')  # 1-liner to save your data to a file!
 pyntree is capable of handling the following files, functions, and formats:
 - Dictionaries in plain text
 - Pickled files/serialization
-- JSON files
+- JSON & YAML files
 - Encryption
 - Backwards compatibility with files saved by pyndb (except encrypted files)
 - Compression in many popular formats

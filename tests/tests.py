@@ -11,7 +11,8 @@ BASIC_FILES = [
     {'a': 1, 'b': {'c': 2}},
     "tests/sample.pyn",
     "tests/sample.pyn.gz",
-    "tests/sample.json"
+    "tests/sample.json",
+    "tests/sample.yml"
 ]
 
 ENCRYPTED_FILES = [

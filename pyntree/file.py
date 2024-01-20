@@ -2,6 +2,12 @@ from os.path import exists
 from pyntree.errors import Error
 import compress_pickle as pickle
 import json
+import yaml
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
 
 # Optional imports
 from pyntree import encryption
@@ -11,6 +17,8 @@ EXTENSIONS = {
     "pyn": "pyn",
     "pyndb": "pyn",
     "json": "json",
+    "yaml": "yaml",
+    "yml": "yaml",
     **pickle.get_registered_extensions()
 }
 DEFAULT_FILETYPE = 'pyn'
@@ -83,6 +91,8 @@ class File:
             return pickle.loads(data, None)
         elif self.filetype == 'json':
             return json.loads(data.decode())
+        elif self.filetype == 'yaml':
+            return yaml.load(data, Loader=Loader)
         elif self.filetype == 'txt':
             return eval(data.decode())
         elif self.filetype in pickle.get_known_compressions():
@@ -105,7 +115,7 @@ class File:
             self.filetype = filetype
         if not exists(filename):
             with open(filename, 'wb') as file:  # Create file in proper format if it doesn't exist
-                if self.filetype in ('json', 'txt'):
+                if self.filetype in ('json', 'txt', 'yaml'):
                     to_write = b'{}'
                 elif self.filetype == 'pyn':
                     to_write = pickle.dumps({}, None)
@@ -144,6 +154,8 @@ class File:
             to_write = pickle.dumps(self.data, None)
         elif self.filetype == 'json':
             to_write = json.dumps(self.data, sort_keys=True, indent=2).encode()
+        elif self.filetype == 'yaml':
+            to_write = yaml.dump(self.data, sort_keys=True, indent=2, Dumper=Dumper).encode()
         elif self.filetype == 'txt':
             to_write = str(self.data).encode()
         elif self.filetype in pickle.get_known_compressions():
